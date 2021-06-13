@@ -100,6 +100,7 @@
     wget
     xcape
     pinentry-gnome
+    pulseaudio-ctl
   ];
 
   # Fonts
