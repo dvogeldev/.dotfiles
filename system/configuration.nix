@@ -10,6 +10,12 @@
       ./hardware-configuration.nix
     ];
 
+  # Make ready for nix flakes
+  nix.package = pkgs.nixFlakes;
+  nix.extraOptions = ''
+    experimental-features = nix-command flakes
+  '';
+
   # Intel microcode
   hardware.cpu.intel.updateMicrocode = true;
 
@@ -57,10 +63,17 @@
   # X11
   services.xserver = {
     enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
     layout = "us";
     xkbOptions = "ctrl:nocaps";
+    displayManager = {
+      gdm.enable = true;
+      # sessionCommands = ''
+      #   ${pkgs.xcape}/bin/xcape -e "Control_L=Escape"
+      #   #xcape -e "Control_L=Escape"
+      # '';
+    };
+    desktopManager.gnome.enable = true;
+    videoDrivers = [ "intel" ];
   };
 
   # Enable CUPS to print documents.
@@ -97,10 +110,10 @@
     gcc
     libcpuid
     neovim
-    wget
-    xcape
     pinentry-gnome
     pulseaudio-ctl
+    wget
+    xcape
   ];
 
   # Fonts
@@ -129,16 +142,6 @@
 
   # List services that you want to enable:
 
-  # Systemd
-  # systemd.user.services."xcape" = {
-  #   enable = true;
-  #   description = "xcape to use CTRL as ESC";
-  #   wantedBy = [ "default.target" ];
-  #   serviceConfig.Type = "forking";
-  #   serviceConfig.Restart = "always";
-  #   serviceConfig.RestartSec = 2;
-  #   serviceConfig.ExecStart = "${pkgs.xcape}/bin/xcape";
-  # };
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
