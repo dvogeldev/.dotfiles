@@ -9,7 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
-
+  
   # Make ready for nix flakes
   nix.package = pkgs.nixFlakes;
   nix.extraOptions = ''
@@ -19,11 +19,18 @@
   # Intel microcode
   hardware.cpu.intel.updateMicrocode = true;
 
-  # Boot
+  # Use the systemd-boot EFI boot loader.
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
   };
+
+  # ZFS
+  boot = {
+    supportedFilesystems = [ "zfs"];
+    zfs.requestEncryptionCredentials = true;
+  };
+  services.zfs.autoScrub.enable = true;
 
   # Networking
   networking = {
@@ -31,13 +38,6 @@
     networkmanager.enable = true;
     hostId = "2020abab";
   };
-
-  # ZFS
-  boot = {
-    supportedFilesystems = [ "zfs" ];
-    zfs.requestEncryptionCredentials = true;
-  };
-  services.zfs.autoScrub.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/Detroit";
@@ -67,10 +67,9 @@
     xkbOptions = "ctrl:nocaps";
     displayManager = {
       gdm.enable = true;
-      # sessionCommands = ''
-      #   ${pkgs.xcape}/bin/xcape -e "Control_L=Escape"
-      #   #xcape -e "Control_L=Escape"
-      # '';
+      sessionCommands = ''
+        ${pkgs.xcape}/bin/xcape -e "Control_L=Escape"
+      '';
     };
     desktopManager.gnome.enable = true;
     videoDrivers = [ "intel" ];
@@ -86,19 +85,19 @@
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
-  # Enable keybase
-  services.keybase.enable = true;
-
   # Enable touchpad support (enabled default in most desktopManager).
-  services.xserver.libinput.enable = true;
+  services.xserver.libinput = {
+    enable = true;
+    touchpad.disableWhileTyping = true;
+  };
 
   # Trusted users
   nix.trustedUsers = [ "root" "david" ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.david = {
-    initialPassword = "pass";
     isNormalUser = true;
+    initialPassword = "pass";
     extraGroups = [ "wheel" "audio" "video" ]; # Enable ‘sudo’ for the user.
   };
 
@@ -107,32 +106,35 @@
   environment.systemPackages = with pkgs; [
     brave
     cachix
+    hack-font
+    cantarell-fonts
+    #font-awesome
     gcc
     libcpuid
     neovim
     pinentry-gnome
     pulseaudio-ctl
+    roboto
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     wget
     xcape
   ];
 
-  # Fonts
-  fonts.fonts = with pkgs; [
-    cantarell-fonts
-    roboto
-    font-awesome-ttf
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-  ];
+  ## Fonts
+  #fonts.fonts = with pkgs; [
+  #  cantarell-fonts
+  #  hack-font
+  #];
 
   # Environment variables
   environment.variables = {
     EDITOR = "nvim";
   };
 
-  programs.neovim.defaultEditor = true;
   programs.mosh.enable = true;
 
-  # SSH GnuPG
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
   programs.mtr.enable = true;
   programs.gnupg.agent = {
     enable = true;
@@ -141,7 +143,6 @@
   };
 
   # List services that you want to enable:
-
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -170,3 +171,4 @@
   system.stateVersion = "21.05"; # Did you read the comment?
 
 }
+

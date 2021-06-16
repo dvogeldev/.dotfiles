@@ -1,43 +1,40 @@
 {
-  description = "My config";
+  description = "My configs";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.05";
-    unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    hardware.url = "github:NixOS/nixos-hardware/master;
-    home = {
-      url = "github:nix-community/home-manager/release-21.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    home-unstable = {
-      url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "unstable";
-    };
-    emacs = {
-      url = "github:nix-community/emacs-overlay/master";
-      inputs.nixpkgs.follows = "unstable";
-    };
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager.url = "github:nix-community/home-manager";
+    nur.url = "github:nix-community/NUR";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, home, ... }@inputs: {
-    nixosConfigurations.dv-tp = nixpkgs.lib.nixosSystem rec {
-      system = "x86_64-linux";
-      modules = [ ./hosts/dv-tp ];
-      specialArgs = { inherit inputs system; };
-    };
+  outputs = 
+    {self
+    , home-manager
+    , nixpkgs
+    , nur
+    , flake-utils
+    , ...
+    }: {
 
-    homeConfigurations.home-linux = home.lib.homeManagerConfiguration rec {
-      configuration = ./users/david/home.nix;
+    overlays = [
+
+    ];
+
+    nixosConfigurations.dv-tp = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      homeDirectory = "/home/david";
-      username = "david";
-      extraSpecialArgs = {
-        inherit inputs system;
-	super = {
-	  device.type = "laptop";
-	  my.username = username;
-        };
-      };
+      modules = [
+        { nixpkgs.overlays = [
+	    nur.overlay
+	  ];
+        }
+	./system/configuration.nix
+	home-manager.nixosModules.home-manager {
+	  home-manager.useGlobalPkgs = true;
+	  home-manager.useUserPackages = true;
+	  home-manager.users.david = import ./users/david/home.nix;
+	}
+      ];
     };
   };
 }
