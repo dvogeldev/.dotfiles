@@ -1,27 +1,5 @@
 { config, pkgs, ... }:
 
-let
-  unstable=import (fetchTarball
-    https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz) {
-    overlays = [
-      (import (builtins.fetchTarball {
-        url=
-	  https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
-      }))
-    ];
-  };
-
-  # Emacs overlay from https://gist.github.com/mjlbach/179cf58e1b6f5afcb9a99d4aaf54f549
-  my-emacs = unstable.emacsWithPackagesFromUsePackage {
-    config = /home/david/.config/doom/init.el;
-    package = unstable.emacsGit;
-    extraEmacsPackages = epkgs: [
-      #epkgs.pdf-tools
-    ];
-  };
-
-in
-
 {
 
 #  # Emacs overlay
@@ -31,10 +9,6 @@ in
 #    }))
 #  ];
 
-  nixpkgs.config.allowUnfree = true;
-  home.file.".config/nixpkgs/config.nix".text = ''
-    { allowUnfree = true; }
-  '';
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
@@ -45,7 +19,6 @@ in
   home.homeDirectory = "/home/david";
 
   home.packages = with pkgs; [
-    my-emacs
     git-crypt
 
     # Archiving
@@ -106,6 +79,7 @@ in
     userName = "David Vogel";
   };
 
+  programs.man.enable = true;
   programs.zsh.enable = true;
 
   services.emacs.enable = true;
