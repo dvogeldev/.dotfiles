@@ -82,7 +82,7 @@
   programs.man.enable = true;
   programs.zsh.enable = true;
 
-  # services.emacs.enable = true;
+  services.emacs.enable = true;
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage

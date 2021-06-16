@@ -1,2 +1,2 @@
 #!/bin/sh
-nix flake update
+sudo nix flake update

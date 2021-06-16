@@ -120,6 +120,8 @@
     xcape
   ];
 
+  nixpkgs.config.allowUnfree = true;
+
   ## Fonts
   #fonts.fonts = with pkgs; [
   #  cantarell-fonts
