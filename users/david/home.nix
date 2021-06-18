@@ -2,12 +2,12 @@
 
 {
 
-#  # Emacs overlay
-#  nixpkgs.overlays = [
-#    (import (builtins.fetchTarball {
-#      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
-#    }))
-#  ];
+ # Emacs overlay
+ nixpkgs.overlays = [
+   (import (builtins.fetchTarball {
+     url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
+   }))
+ ];
 
 
   # Let Home Manager install and manage itself.
@@ -62,11 +62,11 @@
   programs.exa.enable = true;
   programs.bat.enable = true;
 
-#  # Emacs
-#  programs.emacs = {
-#    enable = true;
-#    package = pkgs.emacsGit;
-#  };
+ # Emacs
+ programs.emacs = {
+   enable = true;
+   package = pkgs.emacsGit;
+ };
 
   programs.alacritty.enable = true;
 

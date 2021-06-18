@@ -6,6 +6,10 @@
     home-manager.url = "github:nix-community/home-manager";
     nur.url = "github:nix-community/NUR";
     flake-utils.url = "github:numtide/flake-utils";
+
+    # Extras
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
+    nixos-hardware.url = "github:nixos/nixos-hardware";
   };
 
   outputs = 

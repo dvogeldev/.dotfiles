@@ -66,12 +66,12 @@
     layout = "us";
     xkbOptions = "ctrl:nocaps";
     displayManager = {
-      gdm.enable = true;
+      sddm.enable = true;
       sessionCommands = ''
         ${pkgs.xcape}/bin/xcape -e "Control_L=Escape"
       '';
     };
-    desktopManager.gnome.enable = true;
+    desktopManager.plasma5.enable = true;
     videoDrivers = [ "intel" ];
   };
 
@@ -106,18 +106,22 @@
   environment.systemPackages = with pkgs; [
     brave
     cachix
-    hack-font
-    cantarell-fonts
-    #font-awesome
+    emacs
     gcc
     libcpuid
     neovim
     pinentry-gnome
     pulseaudio-ctl
-    roboto
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     wget
     xcape
+  ];
+
+  fonts.fonts = with pkgs; [
+    cantarell-fonts
+    font-awesome
+    hack-font
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ];})
+    roboto
   ];
 
   nixpkgs.config.allowUnfree = true;
