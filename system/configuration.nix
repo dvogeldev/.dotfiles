@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      <home-manager/nixos>
     ];
   
   # Make ready for nix flakes
@@ -36,7 +37,7 @@
   networking = {
     hostName = "dv-tp";
     networkmanager.enable = true;
-    hostId = "2020abab";
+    hostId = "97534807";
   };
 
   # Set your time zone.
@@ -106,7 +107,6 @@
   environment.systemPackages = with pkgs; [
     brave
     cachix
-    emacs
     gcc
     libcpuid
     neovim
@@ -147,6 +147,8 @@
     enableSSHSupport = true;
     pinentryFlavor = "gnome3";
   };
+
+  programs.ssh.startAgent = true;
 
   # List services that you want to enable:
 

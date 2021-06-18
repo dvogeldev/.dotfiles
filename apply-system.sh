@@ -2,5 +2,5 @@
 # Script to update system
 
 pushd ~/.dotfiles
-sudo nixos-rebuild switch --flake .#
+sudo nixos-rebuild switch -I ./system/configuration.nix
 popd
